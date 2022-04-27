@@ -1,0 +1,87 @@
+function processData(input) {
+    const splitInp = input.split("\r\n");
+    for(let i = 0; i < splitInp.length; i++){
+        let currentData = passCurrentData(splitInp[i].split(";"));
+    }
+} 
+
+function passCurrentData(line){
+    modifyData(line[0], line[1], line[2]);
+}
+
+function modifyData(operation, type, name){
+    let step1 = "";
+    if(operation === 'S'){
+        step1 = split(name);
+    }
+    if(operation === 'C'){
+        step1 = combine(name);
+    }
+    //console.log(step1)
+    let step2 = step1;
+    if(type === 'M'){
+        if(operation === 'C'){
+            console.log(step2 + "()");
+        } else {
+            console.log(step2.substring(0,step2.length-2))
+        }
+    }
+    if(type === 'C'){
+        if(operation === 'C'){
+            console.log(step2.charAt(0).toUpperCase() + step2.substring(1));
+        } else {
+            console.log(step2.charAt(0).toLowerCase() + step2.substring(1));
+        }
+    }
+    if(type === 'V'){
+        console.log(step2);
+    }
+}
+
+function split(name){
+    let str = "";
+    for(let i = 0; i < name.length; i++){
+        let isUpperCase = /^[A-Z]*$/.test(name[i]);
+        if(isUpperCase && i != 0){
+            if(i != name.length-1){
+                str += " ";
+            }
+            str += name[i].toLowerCase();
+        } else {
+            str += name[i];
+        }
+    }
+    return(str);
+}
+
+function combine(name){
+    let str = "";
+    let contIndex = -1;
+    for(let i = 0; i < name.length; i++){
+        let isWhitespace = /\s+/.test(name[i]);
+        let nextIsUpperCase = false;
+        
+        if(isWhitespace){
+            contIndex = i+1;
+            str += name[i+1].toUpperCase();
+        } else {
+            
+            if(i != contIndex){
+                str += name[i];
+            }
+            
+        }
+    }
+    return str;
+}
+
+process.stdin.resume();
+process.stdin.setEncoding("ascii");
+_input = "";
+process.stdin.on("data", function (input) {
+    _input += input;
+});
+
+process.stdin.on("end", function () {
+   processData(_input);
+});
