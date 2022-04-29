@@ -1,0 +1,97 @@
+'use strict';
+
+const fs = require('fs');
+
+process.stdin.resume();
+process.stdin.setEncoding('utf-8');
+
+let inputString = '';
+let currentLine = 0;
+
+process.stdin.on('data', function(inputStdin) {
+    inputString += inputStdin;
+});
+
+process.stdin.on('end', function() {
+    inputString = inputString.split('\n');
+
+    main();
+});
+
+function readLine() {
+    return inputString[currentLine++];
+}
+
+/*
+ * Complete the 'flippingBits' function below.
+ *
+ * The function is expected to return a LONG_INTEGER.
+ * The function accepts LONG_INTEGER n as parameter.
+ */
+
+function flippingBits(n) {
+    let to32Bits = convertTo32Bits(n);
+    let flip = flip32BitNumber(to32Bits);
+    let backToInt = convertToInteger(flip);
+    return backToInt;
+}
+
+function convertToInteger(s){
+    let toInt = 0;
+    for(let i = 0; i < s.length; i++){
+        if(s[i] === '1'){
+            toInt += Math.pow(2, s.length-i-1);
+        }
+    }
+    return toInt;
+}
+
+function flip32BitNumber(num){
+    let flipped = "";
+    for(let i = 0; i < num.length; i++){
+        if(num[i]==='0'){
+            flipped += '1';
+        } else {
+            flipped += '0';
+        }
+    }
+    return flipped;
+}
+
+function convertTo32Bits(n){
+    let toBinary = convertToRegularBinary(n);
+    //console.log(toBinary)
+    let to32 = "";
+    for(let i = 0; i < 32-toBinary.length; i++){
+        to32 += '0';
+    }
+    to32 += toBinary;
+    return to32;
+}
+
+function convertToRegularBinary(n){
+    let num = n;
+    let arr = [];
+    while(num != 0){
+        num = Math.floor(num);
+        arr.unshift(num % 2)
+        num /= 2;
+    }
+    return(arr.slice(1).join(""))
+}
+
+function main() {
+    const ws = fs.createWriteStream(process.env.OUTPUT_PATH);
+
+    const q = parseInt(readLine().trim(), 10);
+
+    for (let qItr = 0; qItr < q; qItr++) {
+        const n = parseInt(readLine().trim(), 10);
+
+        const result = flippingBits(n);
+
+        ws.write(result + '\n');
+    }
+
+    ws.end();
+}
